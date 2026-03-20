@@ -118,7 +118,7 @@ def recuperar():
     if request.method == 'POST':
         email = request.form.get('email')
         try:
-            supabase.auth.reset_password_email(email, options={"redirect_to": "http://127.0.0.1:5000/restablecer"})
+            supabase.auth.reset_password_email(email, options={"redirect_to": "http://sistema-actas-usecipol.onrender.com/restablecer"})
             flash("Enlace enviado.")
             return redirect(url_for('index'))
         except Exception as e:
