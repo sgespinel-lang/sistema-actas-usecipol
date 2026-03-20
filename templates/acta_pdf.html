@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: letter;
+            margin: 3cm 1.5cm 2.5cm 1.5cm; /* Márgenes para dejar espacio al encabezado y pie */
+            
+            /* Definimos el área del encabezado */
+            @frame header_frame {
+                -pdf-frame-content: header_content;
+                left: 1.5cm; width: 18.5cm; top: 1cm; height: 2cm;
+            }
+            
+            /* Definimos el área del pie de página */
+            @frame footer_frame {
+                -pdf-frame-content: footer_content;
+                left: 1.5cm; width: 18.5cm; top: 25.5cm; height: 1.5cm;
+            }
+        }
+
+        body { font-family: Helvetica, Arial, sans-serif; font-size: 10pt; color: #333; }
+        
+        /* Contenedor del Encabezado */
+        #header_content {
+            border-bottom: 2px solid #1a3275;
+            text-align: center;
+        }
+        
+        /* Contenedor del Pie de Página */
+        #footer_content {
+            font-size: 8pt;
+            color: #666;
+            text-align: center;
+            border-top: 0.5pt solid #ccc;
+            padding-top: 5px;
+        }
+
+        /* Estilos de Contenido */
+        .titulo-acta { font-size: 14pt; font-weight: bold; color: #1a3275; margin-top: 10px; }
+        .seccion-header { background-color: #1a3275; color: white; padding: 4px 10px; font-weight: bold; margin-top: 15px; text-transform: uppercase; }
+        
+        .tabla { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .tabla th { background-color: #f2f2f2; border: 1pt solid #333; padding: 5px; font-size: 9pt; }
+        .tabla td { border: 1pt solid #333; padding: 5px; font-size: 9pt; vertical-align: middle; }
+        
+        .img-firma { width: 80px; height: auto; }
+        .info-basica { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <div id="header_content">
+        <table style="width: 100%; border: none;">
+            <tr>
+                <td style="width: 20%; border: none;">
+                    <strong style="color: #1a3275; font-size: 14pt;">USECIPOL</strong>
+                </td>
+                <td style="width: 60%; border: none; text-align: center;">
+                    <div class="titulo-acta">ACTA DE REUNIÓN INSTITUCIONAL</div>
+                    <div style="font-size: 8pt;">GESTIÓN DE DOCUMENTACIÓN Y ARCHIVO</div>
+                </td>
+                <td style="width: 20%; border: none; text-align: right; font-size: 8pt;">
+                    Código: USE-ACT-2026<br>
+                    Versión: 1.0
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="footer_content">
+        Página <pdf:pagenumber> de <pdf:pagecount> | 
+        Documento generado por el Sistema de Actas de reunión<br>
+        <i>Este documento tiene validez digital.</i>
+    </div>
+
+    <div class="info-basica">
+        <p><strong>TEMA:</strong> {{ acta.titulo }}</p>
+        <p><strong>LUGAR:</strong> {{ acta.lugar }} | <strong>FECHA:</strong> {{ acta.fecha_reunion }}</p>
+    </div>
+
+    <div class="seccion-header">1. Antecedentes / Objetivo</div>
+    <div style="padding: 10px; text-align: justify;">
+        {{ acta.objetivo }}
+    </div>
+
+    <div class="seccion-header">2. Compromisos Adquiridos</div>
+    <table class="tabla">
+        <thead>
+            <tr>
+                <th style="width: 50%;">Descripción de la Tarea</th>
+                <th style="width: 25%;">Responsable</th>
+                <th style="width: 25%;">Plazo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for comp in compromisos %}
+            <tr>
+                <td>{{ comp.descripcion_tarea }}</td>
+                <td>{{ comp.responsable_nombre }}</td>
+                <td>{{ comp.fecha_entrega }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="seccion-header">3. Registro de Asistencia y Firmas</div>
+    <table class="tabla">
+        <thead>
+            <tr>
+                <th>Nombres Completos</th>
+                <th>Cédula de Identidad</th>
+                <th>Unidad / Cargo</th>
+                <th style="width: 100px;">Firma</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for part in participantes %}
+            <tr>
+                <td>{{ part.nombres_completos }}</td>
+                <td>{{ part.cedula }}</td>
+                <td>{{ part.unidad }}</td>
+                <td style="text-align: center;">
+                    {% if part.trazo_firma_url %}
+                        <img src="{{ part.trazo_firma_url }}" class="img-firma">
+                    {% else %}
+                        <span style="color: red;">Pte. Firma</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

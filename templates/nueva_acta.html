@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Nueva Acta - USECIPOL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #f8fafc; color: #1a3275; min-height: 100vh; font-family: 'Segoe UI', sans-serif; }
+        .white-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .form-input { 
+            width: 100%; padding: 0.5rem 0.75rem; background-color: #fdfdfd; 
+            border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem;
+        }
+        .form-label { display: block; font-size: 0.7rem; font-weight: 800; color: #1e293b; margin-bottom: 3px; text-transform: uppercase; }
+        .header-blue { background-color: #1a3275; color: white; padding: 10px 15px; font-weight: bold; font-size: 0.9rem; }
+        .section-box { border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+    </style>
+</head>
+<body class="p-6">
+
+    <div class="max-w-5xl mx-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-black italic text-[#1a3275]">USECIPOL <span class="text-yellow-500 font-normal text-lg not-italic">| Gestión de Actas</span></h1>
+            <a href="/dashboard" class="text-xs font-bold text-gray-400 hover:text-red-500"><i class="fas fa-times mr-1"></i> CANCELAR</a>
+        </div>
+
+        <form action="/nueva_acta" method="POST" class="white-card p-8">
+            
+            <div class="section-box">
+                <div class="header-blue text-center">DATOS DE LA REUNIÓN</div>
+                <div class="p-5 grid grid-cols-1 md:grid-cols-4 gap-4">
+				<div class="mb-4">
+					<label class="block text-sm font-bold text-blue-900 mb-1">UNIDAD O DEPARTAMENTO</label>
+						<select id="unidad" name="unidad" onchange="generarNumeroActa()" class="w-full border border-gray-300 rounded px-3 py-2 text-gray-700 bg-white focus:outline-none focus:border-blue-500" required>
+							<option value="">Seleccione una unidad...</option>
+							<option value="TH">Talento Humano (TH)</option>
+							<option value="OP">Operaciones (OP)</option>
+							<option value="LOG">Logística (LOG)</option>
+							<option value="TEL">Sistemas / Telemática (TEL)</option>
+							<option value="AJ">Asesoría Jurídica (AJ)</option>
+							<option value="DIR">Dirección (DIR)</option>
+						</select>
+				</div>
+
+				<div class="mb-4">
+					<label class="block text-sm font-bold text-blue-900 mb-1">NÚMERO DE ACTA</label>
+					<input type="text" id="numero_acta" name="numero_acta" readonly placeholder="Se generará automáticamente..." class="w-full border border-gray-300 rounded px-3 py-2 text-gray-700 bg-gray-100 cursor-not-allowed font-mono font-bold text-blue-800">
+				</div>
+                    <div>
+                        <label class="form-label">Fecha</label>
+                        <input type="date" name="fecha_reunion" class="form-input" required>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="form-label">H. Inicio</label>
+                            <input type="time" name="hora_inicio" class="form-input" required>
+                        </div>
+                        <div>
+                            <label class="form-label">H. Fin</label>
+                            <input type="time" name="hora_fin" class="form-input">
+                        </div>
+                    </div>
+                    <div class="col-span-4">
+                        <label class="form-label">Antecedentes (Disposición o Documento)</label>
+                        <input type="text" name="antecedentes" class="form-input" placeholder="Referencia legal o memorando...">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-box">
+                <div class="header-blue">DESARROLLO DE LA AGENDA</div>
+                <div class="p-5 space-y-4">
+                    <div>
+                        <label class="form-label">Tema Referente A (Título):</label>
+                        <input type="text" name="titulo" class="form-input font-bold" placeholder="Asunto principal..." required>
+                    </div>
+                    <div>
+                        <label class="form-label">Resumen de la Reunión:</label>
+                        <textarea name="puntos_tratados" rows="5" class="form-input" placeholder="Describa los puntos clave discutidos..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-box">
+                <div class="header-blue">COMPROMISOS ADQUIRIDOS</div>
+                <div class="p-0 overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse" id="tablaCompromisos">
+                        <thead class="bg-gray-50 text-gray-600">
+                            <tr>
+                                <th class="p-3 border-b">SUB-TEMA / TAREA</th>
+                                <th class="p-3 border-b">RESPONSABLE</th>
+                                <th class="p-3 border-b">FECHA TÉRMINO</th>
+                                <th class="p-3 border-b w-10"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr>
+                                <td class="p-2"><input type="text" name="descripcion_tarea[]" class="form-input border-none bg-transparent focus:ring-0" placeholder="Escriba la tarea..."></td>
+                                <td class="p-2"><input type="text" name="responsable_nombre[]" class="form-input border-none bg-transparent focus:ring-0" placeholder="Nombre/Cargo"></td>
+                                <td class="p-2"><input type="date" name="fecha_entrega[]" class="form-input border-none bg-transparent focus:ring-0"></td>
+                                <td class="p-2 text-center"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="p-3 bg-gray-50 border-t">
+                    <button type="button" onclick="agregarFila()" class="text-[#1a3275] font-bold text-xs flex items-center hover:underline">
+                        <i class="fas fa-plus-circle mr-1 text-sm"></i> AGREGAR OTRO COMPROMISO
+                    </button>
+                </div>
+            </div>
+
+            <div class="section-box">
+                <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="form-label">Fecha de Próxima Reunión</label>
+                        <input type="date" name="fecha_proxima" class="form-input">
+                    </div>
+                    <div>
+                        <label class="form-label">Observaciones Adicionales</label>
+                        <textarea name="observaciones" rows="1" class="form-input"></textarea>
+                    </div>
+                </div>
+            </div>
+
+			<button type="button" onclick="mostrarVistaPrevia()" class="bg-blue-800 text-white px-6 py-2 rounded-lg font-bold">
+				REVISAR REGISTRO <i class="fas fa-eye ml-2"></i>
+			</button>
+
+			<div id="modalPreview" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+				<div class="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl shadow-2xl">
+					<div class="p-4 border-b bg-gray-50 flex justify-between items-center sticky top-0">
+						<h3 class="text-xl font-bold text-blue-900">Vista Previa del Acta</h3>
+						<button onclick="cerrarVistaPrevia()" class="text-gray-500 hover:text-red-600 text-2xl">&times;</button>
+					</div>
+
+					<div id="previewContent" class="p-10 font-serif text-gray-800 bg-white">
+						</div>
+
+					<div class="p-6 border-t bg-gray-50 flex justify-end gap-4 sticky bottom-0">
+						<button type="button" onclick="cerrarVistaPrevia()" class="px-6 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500">
+							<i class="fas fa-edit mr-2"></i> SEGUIR EDITANDO
+						</button>
+						<button onclick="confirmarGuardado()" class="px-6 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 font-bold">
+							CONFIRMAR Y GUARDAR <i class="fas fa-save ml-2"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+
+        </form>
+    </div>
+
+    <script>
+		function mostrarVistaPrevia() {
+            // 1. Captura de campos básicos (¡CORREGIDO!)
+            // Antes usabas 'lugar', ahora nuestro select se llama 'unidad'
+            const unidadSelect = document.getElementById('unidad');
+            // Sacamos el texto visible del select (Ej. "Talento Humano (TH)") en lugar de solo "TH"
+            const lugar = unidadSelect.options[unidadSelect.selectedIndex].text; 
+            
+            // Agregamos la captura del nuevo campo Número de Acta
+            const num_acta = document.getElementById('numero_acta').value;
+
+            const fecha = document.getElementsByName('fecha_reunion')[0].value;
+            const h_inicio = document.getElementsByName('hora_inicio')[0].value;
+            const h_fin = document.getElementsByName('hora_fin')[0].value;
+            const antecedentes = document.getElementsByName('antecedentes')[0].value;
+            const titulo = document.getElementsByName('titulo')[0].value;
+            const resumen = document.getElementsByName('puntos_tratados')[0].value;
+            const obs = document.getElementsByName('observaciones')[0].value;
+            const prox_reunion = document.getElementsByName('fecha_proxima')[0] ? document.getElementsByName('fecha_proxima')[0].value : 'No definida';
+
+            // 2. Captura dinámica de Compromisos (Esto está perfecto, se queda igual)
+            let filasCompromisos = "";
+            const tareas = document.getElementsByName('descripcion_tarea[]');
+            const responsables = document.getElementsByName('responsable_nombre[]');
+            const plazos = document.getElementsByName('fecha_entrega[]');
+
+            for (let i = 0; i < tareas.length; i++) {
+                if (tareas[i].value.trim() !== "") {
+                    filasCompromisos += `
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 8px;">${tareas[i].value}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px;">${responsables[i].value}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px;">${plazos[i].value}</td>
+                        </tr>`;
+                }
+            }
+
+            // 3. Construcción del HTML Completo
+            let html = `
+                <div style="text-align: center; border-bottom: 2px solid #1e3a8a; margin-bottom: 20px;">
+                    <h2 style="color: #1e3a8a; margin-bottom: 5px;">ACTA DE REUNIÓN - USECIPOL</h2>
+                </div>
+                
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                    <tr>
+                        <td style="padding: 5px;"><strong>UNIDAD:</strong> ${lugar}</td>
+                        <td style="padding: 5px; text-align: right;"><strong>Nº ACTA:</strong> <span style="color:#b91c1c;">${num_acta || 'No generado'}</span></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 5px;"><strong>FECHA:</strong> ${fecha}</td>
+                        <td style="padding: 5px; text-align: right;"><strong>HORARIO:</strong> ${h_inicio} a ${h_fin}</td>
+                    </tr>
+                </table>
+
+                <p><strong>TEMA (TÍTULO):</strong> ${titulo}</p>
+
+                <div style="background: #f3f4f6; padding: 8px; font-weight: bold; margin-top: 15px;">ANTECEDENTES</div>
+                <p style="white-space: pre-line; padding: 10px;">${antecedentes}</p>
+
+                <div style="background: #f3f4f6; padding: 8px; font-weight: bold; margin-top: 15px;">RESUMEN DE LA REUNIÓN</div>
+                <p style="white-space: pre-line; padding: 10px;">${resumen}</p>
+
+                <div style="background: #f3f4f6; padding: 8px; font-weight: bold; margin-top: 15px;">COMPROMISOS ACORDADOS</div>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                    <thead>
+                        <tr style="background: #e5e7eb;">
+                            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Tarea</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Responsable</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Plazo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${filasCompromisos || '<tr><td colspan="3" style="text-align:center; padding:10px;">No se registraron compromisos</td></tr>'}
+                    </tbody>
+                </table>
+
+                <div style="margin-top: 20px;">
+                    <p><strong>OBSERVACIONES ADICIONALES:</strong> ${obs}</p>
+                    <p><strong>PRÓXIMA REUNIÓN:</strong> ${prox_reunion}</p>
+                </div>
+            `;
+
+            document.getElementById('previewContent').innerHTML = html;
+            document.getElementById('modalPreview').classList.remove('hidden');
+        }
+
+		function cerrarVistaPrevia() {
+			// Esto solo cierra la ventana negra, tus datos siguen en los cuadritos de abajo
+			document.getElementById('modalPreview').classList.add('hidden');
+		}
+
+		function confirmarGuardado() {
+			// Si el usuario confirma, enviamos el formulario real
+			document.querySelector('form').submit();
+		}
+
+	
+	
+        function agregarFila() {
+            const tbody = document.querySelector("#tablaCompromisos tbody");
+            const tr = document.createElement("tr");
+            tr.className = "divide-x divide-gray-100";
+            tr.innerHTML = `
+                <td class="p-2"><input type="text" name="descripcion_tarea[]" class="form-input border-none bg-transparent" placeholder="Escriba la tarea..."></td>
+                <td class="p-2"><input type="text" name="responsable_nombre[]" class="form-input border-none bg-transparent" placeholder="Nombre/Cargo"></td>
+                <td class="p-2"><input type="date" name="fecha_entrega[]" class="form-input border-none bg-transparent"></td>
+                <td class="p-2 text-center">
+                    <button type="button" onclick="this.closest('tr').remove()" class="text-red-400 hover:text-red-600"><i class="fas fa-trash"></i></button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        }
+		
+		
+			async function generarNumeroActa() {
+				const selectUnidad = document.getElementById('unidad'); 
+				const inputNumeroActa = document.getElementById('numero_acta');
+				const siglas = selectUnidad.value;
+
+			// Si vuelve a la opción "Seleccione...", limpiamos el campo
+			if (!siglas) {
+				inputNumeroActa.value = '';
+				return;
+			}
+
+			// Le ponemos un mensaje de carga temporal
+			inputNumeroActa.value = 'Generando...';
+
+			try {
+				// Hacemos la petición a nuestra nueva ruta en Python
+				const response = await fetch(`/api/generar_secuencial?unidad=${siglas}`);
+				const data = await response.json();
+
+				if (response.ok && data.numero_acta) {
+					// Colocamos el número mágico en el campo bloqueado
+					inputNumeroActa.value = data.numero_acta;
+				} else {
+					inputNumeroActa.value = 'Error al generar';
+					console.error(data.error);
+				}
+			} catch (error) {
+				inputNumeroActa.value = 'Error de conexión';
+				console.error("Error:", error);
+			}
+		}
+				
+    </script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - USECIPOL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { 
+            background-color: #f8fafc; /* Fondo gris súper claro casi blanco */
+            color: #1a3275; /* Texto principal azul institucional */
+            min-height: 100vh; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        }
+        /* Contenedor blanco con sombra suave para la tabla */
+        .white-panel { 
+            background: #ffffff; 
+            border: 1px solid rgba(0,0,0,0.05); 
+            border-radius: 12px; 
+            box-shadow: 0 10px 30px rgba(26, 50, 117, 0.08); /* Sombra con un ligero tono azul */
+        }
+    </style>
+</head>
+<body class="p-8">
+
+    <header class="flex justify-between items-center mb-12 max-w-6xl mx-auto">
+        <div>
+            <h1 class="text-3xl font-black italic text-[#1a3275] tracking-wide">USECIPOL</h1>
+            <p class="text-yellow-600 font-bold text-sm mt-1">Panel de Control Institucional</p>
+        </div>
+        <div class="flex items-center space-x-6">
+            <div class="text-sm font-bold text-[#1a3275] flex items-center bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100">
+                <i class="fas fa-user-circle text-xl text-yellow-500 mr-2"></i> {{ nombre }}
+            </div>
+            <a href="/logout" class="text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-2 rounded-lg transition text-sm font-bold flex items-center">
+                <i class="fas fa-sign-out-alt mr-2"></i> Salir
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto">
+        <div class="flex justify-between items-end mb-6">
+            <h2 class="text-xl font-bold border-b-4 border-yellow-400 pb-2 px-1 text-[#1a3275]">Actas Recientes</h2>
+            <a href="/nueva_acta" class="bg-[#1a3275] hover:bg-[#2a4aa3] text-white px-5 py-2.5 rounded-lg font-bold text-sm transition flex items-center shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                <i class="fas fa-plus mr-2"></i> NUEVA REUNIÓN
+            </a>
+        </div>
+
+        <div class="white-panel overflow-hidden">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="border-b border-gray-200 text-[#1a3275] text-xs uppercase tracking-wider bg-gray-50/80">
+                        <th class="p-5 font-bold">Tema / Título</th>
+                        <th class="p-5 font-bold">Fecha</th>
+                        <th class="p-5 font-bold">Lugar</th>
+                        <th class="p-5 font-bold">Estado</th>
+                        <th class="p-5 font-bold text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm">
+                    {% for acta in actas %}
+                    <tr class="border-b border-gray-100 hover:bg-blue-50/50 transition duration-150">
+                        <td class="p-5 font-bold text-[#1a3275]">{{ acta.titulo }}</td>
+                        <td class="p-5 text-gray-600 font-medium">
+                            <i class="far fa-calendar-alt mr-2 text-gray-400"></i>
+                            {{ acta.fecha_reunion.split('T')[0] if acta.fecha_reunion else 'N/A' }}
+                        </td>
+                        <td class="p-5 text-gray-600 font-medium">{{ acta.lugar }}</td>
+                        <td class="p-5">
+                            <span class="bg-blue-100 text-blue-800 border border-blue-200 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+                                {{ acta.estado }}
+                            </span>
+                        </td>
+                        <td class="p-5 text-center">
+                            <a href="/acta/{{ acta.id }}" class="bg-gray-100 hover:bg-gray-200 text-[#1a3275] border border-gray-200 px-4 py-2 rounded-md text-xs font-bold transition inline-flex items-center shadow-sm">
+                                Gestionar <i class="fas fa-arrow-right ml-2 text-yellow-600"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="p-16 text-center text-gray-500">
+                            <div class="bg-gray-50 inline-block p-6 rounded-full mb-4">
+                                <i class="fas fa-folder-open text-4xl text-gray-300"></i>
+                            </div>
+                            <p class="font-medium">Aún no has creado ninguna reunión.</p>
+                            <p class="text-sm mt-1">Haz clic en <span class="font-bold text-[#1a3275]">"Nueva Reunión"</span> para empezar.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+</body>
+</html>

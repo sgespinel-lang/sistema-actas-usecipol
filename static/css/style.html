@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USECIPOL - Acceso al Sistema</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        body {
+            background: linear-gradient(135deg, #1e3a8a 0%, #000000 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="glass-effect w-full max-w-md rounded-2xl shadow-2xl overflow-hidden">
+        <div class="p-6 text-center bg-blue-900 text-white">
+            <div class="inline-block p-3 bg-white rounded-full mb-3">
+                <i class="fas fa-shield-halved text-blue-900 text-3xl"></i>
+            </div>
+            <h1 class="text-2xl font-bold uppercase tracking-wider">USECIPOL</h1>
+            <p class="text-blue-200 text-sm">Sistema de Actas de Reunión</p>
+        </div>
+
+        <div class="p-8">
+            <div class="flex mb-8 border-b">
+                <button id="tab-login" onclick="switchTab('login')" class="flex-1 pb-2 font-semibold text-blue-900 border-b-2 border-blue-900 transition">Iniciar Sesión</button>
+                <button id="tab-register" onclick="switchTab('register')" class="flex-1 pb-2 font-semibold text-gray-400 border-b-2 border-transparent transition">Registrarse</button>
+            </div>
+
+            <form id="form-login" class="space-y-5">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Correo Institucional</label>
+                    <div class="relative mt-1">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                            <i class="fas fa-envelope"></i>
+                        </span>
+                        <input type="email" required class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="usuario@usecipol.gob">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Contraseña</label>
+                    <div class="relative mt-1">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input type="password" required class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="••••••••">
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-3 rounded-lg transition duration-300 transform hover:scale-[1.02]">
+                    INGRESAR
+                </button>
+            </form>
+
+            <form id="form-register" class="space-y-5 hidden">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Nombre Completo</label>
+                    <input type="text" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="Ej. Juan Pérez">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Unidad / Departamento</label>
+                    <select class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                        <option>OSI-CG</option>
+                        <option>Asesoría Jurídica</option>
+                        <option>Operaciones</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+                    <input type="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="usuario@correo.com">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Crear Contraseña</label>
+                    <input type="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="••••••••">
+                </div>
+                <button type="submit" class="w-full bg-green-700 hover:bg-green-600 text-white font-bold py-3 rounded-lg transition duration-300 transform hover:scale-[1.02]">
+                    CREAR CUENTA
+                </button>
+            </form>
+        </div>
+
+        <div class="p-4 bg-gray-50 border-t text-center">
+            <p class="text-xs text-gray-500 uppercase tracking-widest">&copy; 2024 USECIPOL - Seguridad & Control</p>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(type) {
+            const loginForm = document.getElementById('form-login');
+            const registerForm = document.getElementById('form-register');
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+
+            if (type === 'login') {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                tabLogin.classList.add('text-blue-900', 'border-blue-900');
+                tabLogin.classList.remove('text-gray-400', 'border-transparent');
+                tabRegister.classList.remove('text-blue-900', 'border-blue-900');
+                tabRegister.classList.add('text-gray-400', 'border-transparent');
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                tabRegister.classList.add('text-blue-900', 'border-blue-900');
+                tabRegister.classList.remove('text-gray-400', 'border-transparent');
+                tabLogin.classList.remove('text-blue-900', 'border-blue-900');
+                tabLogin.classList.add('text-gray-400', 'border-transparent');
+            }
+        }
+
+        // Simulación de redirección al enviar
+        document.getElementById('form-login').onsubmit = (e) => {
+            e.preventDefault();
+            alert('¡Acceso concedido! Redirigiendo al generador de actas...');
+            // Aquí iría: window.location.href = "acta.html";
+        };
+
+        document.getElementById('form-register').onsubmit = (e) =>

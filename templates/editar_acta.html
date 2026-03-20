@@ -1,0 +1,9 @@
+<input type="text" name="lugar" value="{{ acta.lugar }}" class="form-control">
+
+<input type="date" name="fecha_reunion" value="{{ acta.fecha_reunion[:10] }}" class="form-control">
+
+<input type="text" name="titulo" value="{{ acta.titulo }}" class="form-control">
+
+<textarea name="antecedentes" class="form-control">{{ acta.objetivo }}</textarea>
+
+<textarea name="puntos_tratados" class="form-control">{{ acta.puntos_tratados }}</textarea>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USECIPOL - Registro Institucional</title>
+    <style>
+        /* Reutilizamos los mismos estilos base del login */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: radial-gradient(circle at left bottom, #0a2463, #020817); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; position: relative; overflow: hidden; }
+        .background-lights { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: blur(40px); opacity: 0.2; background: radial-gradient(circle at 70% 30%, #ffea00, transparent), radial-gradient(circle at 40% 60%, #446aff, transparent); }
+        .login-card { background: rgba(14, 25, 60, 0.4); border-radius: 35px; backdrop-filter: blur(15px); padding: 35px; text-align: center; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6); position: relative; width: 450px; max-width: 95%; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .card-header h1 { font-weight: black; font-style: italic; font-size: 28px; margin: 0 0 5px; color: white; }
+        .yellow-underline { width: 60%; height: 3px; background-color: #ffea00; margin: 0 auto 10px; border-radius: 2px; box-shadow: 0 0 8px rgba(255,234,0,0.5); }
+        .card-header p { font-size: 9px; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
+        
+        /* Pestañas */
+        .tabs { margin: 10px 0 25px; position: relative; display: inline-flex; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .tab { font-size: 14px; margin: 0 15px; text-decoration: none; color: rgba(255, 255, 255, 0.6); padding-bottom: 10px; transition: 0.3s; position: relative; }
+        .tab.active { color: white; font-weight: bold; }
+        .tab.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background-color: #ffea00; border-radius: 2px; box-shadow: 0 0 5px rgba(255,234,0,0.5); }
+        
+        /* Formulario Compacto */
+        .login-form { text-align: left; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .full-width { grid-column: span 2; }
+        
+        .input-group label { display: block; font-size: 10px; color: rgba(255, 255, 255, 0.8); margin-bottom: 5px; margin-left: 5px; text-transform: uppercase; }
+        .input-wrapper { position: relative; background: rgba(0, 0, 0, 0.2); border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; }
+        .input-wrapper:focus-within { border-color: #ffea00; box-shadow: 0 0 8px rgba(255,234,0,0.2); }
+        .input-wrapper input, .input-wrapper select { width: 100%; padding: 10px 10px 10px 35px; background: transparent; border: none; color: white; font-size: 13px; outline: none; }
+        .input-wrapper i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 14px; color: white; opacity: 0.7; }
+        .input-wrapper option { background: #0a2463; color: white; }
+
+        .login-button { padding: 12px 25px; background-color: #0d47a1; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 13px; cursor: pointer; text-transform: uppercase; transition: 0.3s; width: 100%; margin-top: 15px; }
+        .login-button:hover { background-color: #1565c0; box-shadow: 0 6px 20px rgba(13, 71, 161, 0.7); transform: translateY(-2px); }
+        
+        .alert-error { background: rgba(220, 38, 38, 0.2); border: 1px solid rgba(220, 38, 38, 0.5); color: #fca5a5; padding: 10px; border-radius: 10px; font-size: 11px; text-align: center; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="background-lights"></div>
+
+    <div class="login-card">
+        <header class="card-header">
+            <h1>USECIPOL</h1>
+            <div class="yellow-underline"></div>
+            <p>SISTEMA DE ACTAS DE REUNIÓN</p>
+        </header>
+
+        <nav class="tabs">
+            <a href="/" class="tab">Login</a>
+            <a href="/registro" class="tab active">Registro</a>
+        </nav>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="alert-error">{{ messages[0] }}</div>
+          {% endif %}
+        {% endwith %}
+
+        <form action="/registro" method="POST" class="login-form">
+            <div class="input-group">
+                <label>Nombres</label>
+                <div class="input-wrapper">
+                    <i>📝</i>
+                    <input type="text" name="nombres" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Apellidos</label>
+                <div class="input-wrapper">
+                    <i>📝</i>
+                    <input type="text" name="apellidos" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Cédula</label>
+                <div class="input-wrapper">
+                    <i>🪪</i>
+                    <input type="text" name="cedula" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Grado Policial</label>
+                <div class="input-wrapper">
+                    <i>⭐</i>
+                    <select name="grado" required>
+                        <option value="" disabled selected>Seleccione...</option>
+                        <option value="General">General de Distrito</option>
+                        <option value="Coronel">Coronel</option>
+						<option value="Teniente Coronel">Teniente Coronel</option>
+                        <option value="Mayor">Mayor</option>
+                        <option value="Capitán">Capitán</option>
+                        <option value="Teniente">Teniente</option>
+						<option value="Subteniente">Subteniente</option>
+						<option value="SubOficial Mayor">SubOficial Mayor</option>
+						<option value="SubOficial Primero">SubOficial Primero</option>
+						<option value="SubOficial Segundo">SubOficial Segundo</option>
+                        <option value="Sargento Primero">Sargento Primero</option>
+						<option value="Sargento Segundo">Sargento Segundo</option>
+						<option value="Cabo Primero">Cabo Primero</option>
+                        <option value="Cabo Segundo">Cabo Segundo</option>
+                        <option value="Policía">Policía</option>
+                    </select>
+                </div>
+            </div>
+			
+			            <div class="input-group">
+                <label>Unidad Administrativa</label>
+                <div class="input-wrapper">
+                    <i>⭐</i>
+                    <select name="Unidad" required>
+                        <option value="" disabled selected>Seleccione...</option>
+                        <option value="TICS">TICS</option>
+                        <option value="Talento Humano">Talento Humano</option>
+						<option value="Financiero">Financiero</option>
+                        <option value="Académico">Académico</option>
+                       
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group full-width">
+                <label>Correo Institucional</label>
+                <div class="input-wrapper">
+                    <i>✉️</i>
+                    <input type="email" name="email" placeholder="usuario@usecipol.edu.ec" required>
+                </div>
+            </div>
+
+            <div class="input-group full-width">
+                <label>Contraseña Segura (Min. 6 caracteres)</label>
+                <div class="input-wrapper">
+                    <i>🔒</i>
+                    <input type="password" name="password" required>
+                </div>
+            </div>
+
+            <div class="full-width">
+                <button type="submit" class="login-button">CREAR CUENTA</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+
+function autocompletarPerfil() {
+    const cedula = document.getElementById('cedula').value;
+    if (cedula.length < 10) return;
+
+    fetch(`/buscar_perfil/${cedula}`)
+        .then(response => response.json())
+        .then(res => {
+            if (res.status === 'found') {
+                // Llenamos los campos con lo que hay en la BD
+                document.getElementById('nombres').value = `${res.data.nombres} ${res.data.apellidos}`;
+                document.getElementById('grado_cargo').value = `${res.data.grado} - ${res.data.cargo}`;
+                document.getElementById('correo').value = res.data.email;
+                alert("Datos cargados desde su perfil institucional. Por favor, verifique y actualice si es necesario.");
+            }
+        });
+}
